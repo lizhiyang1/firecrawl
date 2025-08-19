@@ -18,7 +18,9 @@ FROM golang:1.24 AS go-base
 COPY sharedLibs/go-html-to-md /app/sharedLibs/go-html-to-md
 
 # Install Go dependencies and build parser lib
-RUN cd /app/sharedLibs/go-html-to-md && \
+# 设置国内 Go 模块代理并构建
+RUN go env -w GOPROXY=https://goproxy.cn,direct && \
+    cd /app/sharedLibs/go-html-to-md && \
     go mod download && \
     go build -o html-to-markdown.so -buildmode=c-shared html-to-markdown.go && \
     chmod +x html-to-markdown.so
